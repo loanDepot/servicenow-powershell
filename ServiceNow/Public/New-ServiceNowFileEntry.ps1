@@ -87,7 +87,7 @@
             $ServiceNowCredential = New-Object System.Management.Automation.PSCredential ($Connection.Username, $SecurePassword)
             $ServiceNowURL = 'https://' + $Connection.ServiceNowUri + '/api/now/v1'
         }
-        elseif ($ServiceNowCredential -ne $null -and $ServiceNowURL -ne $null)
+        elseif ($ServiceNowCredential -ne $null -and -not [string]::IsNullOrEmpty($ServiceNowURL))
         {
             $ServiceNowURL = 'https://' + $ServiceNowURL + '/api/now/v1'
         }

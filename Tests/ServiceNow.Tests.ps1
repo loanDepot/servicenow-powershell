@@ -127,7 +127,7 @@ Describe "ServiceNow-Module" {
         }
         $TestTicket = New-ServiceNowIncident @newServiceNowIncidentSplat
 
-        $fileContents = Get-Service | ConvertTo-Csv -NoTypeInformation | Out-String
+        $fileContents = Get-Verb | ConvertTo-Csv -NoTypeInformation | Out-String
         $fileContents = [System.Text.Encoding]::Utf8.GetBytes($fileContents)
 
         $TestFile = New-ServiceNowFileEntry -Table "incident" -TableId $TestTicket.sys_id -FileName "New-ServiceNowFileEntry_works.csv" -FileContents $fileContents -ContentType "text/csv"

@@ -113,6 +113,29 @@ Describe "ServiceNow-Module" {
         $TestTicket.short_description | Should -Be $ShortDescription
     }
 
+    It "New-ServiceNowFileEntry works" {
+        $ShortDescription = "Testing Ticket Creation with Pester"
+        $newServiceNowIncidentSplat = @{
+            Caller              = $Defaults.TestUser
+            ShortDescription    = $ShortDescription
+            Description         = "Long description"
+            AssignmentGroup     = $Defaults.TestUserGroup
+            Comment             = "Comment"
+            Category            = $Defaults.TestCategory
+            SubCategory         = $Defaults.TestSubcategory
+            ConfigurationItem   = $Defaults.TestConfigurationIte
+        }
+        $TestTicket = New-ServiceNowIncident @newServiceNowIncidentSplat
+
+        $fileContents = Get-Verb | ConvertTo-Csv -NoTypeInformation | Out-String
+        $fileContents = [System.Text.Encoding]::Utf8.GetBytes($fileContents)
+
+        $TestFile = New-ServiceNowFileEntry -Table "incident" -TableId $TestTicket.sys_id -FileName "New-ServiceNowFileEntry_works.csv" -FileContents $fileContents -ContentType "text/csv"
+
+        $TestFile.file_name | Should -Be 'New-ServiceNowFileEntry_works.csv'
+        $TestFile.content_type | Should -Be 'text/csv'
+    }
+
     # Update functions
     It "Update-ServiceNowChangeRequest works" {
         $TestTicket = Get-ServiceNowChangeRequest -Limit 1
@@ -138,7 +161,6 @@ Describe "ServiceNow-Module" {
             Values = $Values
         }
         $null = Update-ServiceNowChangeRequest @updateServiceNowNumberSplat
-
     }
 
     It "Update-ServiceNowIncident works" {
